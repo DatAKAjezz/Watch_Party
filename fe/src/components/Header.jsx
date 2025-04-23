@@ -38,13 +38,13 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-gray-900 text-white shadow-lg">
+    <header className="text-white shadow-lg bg-[rgb(21,17,17)]">
       <div className="container mx-auto px-4 py-3">
         {/* Layout Desktopg */}
         <div className="hidden md:flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <img className="w-20 mx-2" src="logo.png"/>
+            <img className="w-20 mx-2" src="logo.png" />
             <div className="text-red-600 font-bold text-2xl">
               MOVIE<span className="text-white">HUB</span>
             </div>
@@ -121,7 +121,6 @@ export default function Header() {
               )}
             </div>
           </nav>
-
 
           {/* User & Notification */}
           <div className="flex items-center space-x-4">

@@ -9,3 +9,4 @@ export const getMovieDetails = async (slug) => {
         return null;
     } 
 }
+

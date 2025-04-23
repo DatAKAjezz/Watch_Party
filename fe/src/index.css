@@ -1,6 +1,22 @@
 @import "tailwindcss";
 
-*{
-
+body{
+  background-color: rgb(25, 33, 37);
   font-family: 'JetBrains Mono', monospace;
+}
+
+/* Màu dot bình thường */
+.slick-dots li button:before {
+  color: white !important;
+  opacity: 0.5;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+/* Dot đang active (slide hiện tại) */
+.slick-dots li.slick-active button:before {
+  color: cyan !important;
+  opacity: 1;
+  font-size: 14px;
+  transition: all 0.3s ease;
 }
