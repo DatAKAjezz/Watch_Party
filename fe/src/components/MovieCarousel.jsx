@@ -60,11 +60,11 @@ const MovieCarousel = () => {
     <div className="px-4 py-8 bg-[rgb(15,20,22)] rounded-md">
       <Slider {...settings}>
         {newMovies.slice(0, 5).map((movie) => (
-          <div key={movie._id} className="px-2">
-            <div className="bg-white shadow rounded overflow-hidden relative group cursor-pointer">
+          <div key={movie.movie._id} className="px-2">
+            <div className="bg-white shadow  overflow-hidden relative group cursor-pointer">
               <img
-                src={movie.poster_url}
-                alt={movie.name}
+                src={movie.movie.poster_url}
+                alt={movie.movie.name}
                 className="w-full h-auto object-cover"
                 style={{ aspectRatio: "16/9" }}
               />

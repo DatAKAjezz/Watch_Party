@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Search, UserCircle, Bell, Menu, X, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { TbLogout } from "react-icons/tb";
+import { logout } from "../helpers/MovieHelper";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,6 +12,8 @@ export default function Header() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -44,7 +49,7 @@ export default function Header() {
         <div className="hidden md:flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <img className="w-20 mx-2" src="logo.png" />
+            <img className="w-20 mx-2" src="/logo.png" />
             <div className="text-red-600 font-bold text-2xl">
               MOVIE<span className="text-white">HUB</span>
             </div>
@@ -71,15 +76,20 @@ export default function Header() {
 
           {/* Menu điều hướng */}
           <nav className="flex items-center space-x-6">
-            <a href="#" className="hover:text-red-500 font-medium">
+            <a
+              onClick={() => {
+                navigate("/");
+              }}
+              className="hover:text-red-500 font-medium cursor-pointer"
+            >
               Trang chủ
             </a>
 
             {/* Dropdown Thể loại */}
-            <div className="relative">
+            <div className="relative  cursor-pointer">
               <button
                 onClick={() => toggleDropdown("genres")}
-                className="flex items-center hover:text-red-500 font-medium"
+                className="flex  cursor-pointer items-center hover:text-red-500 font-medium"
               >
                 Thể loại <ChevronDown size={16} className="ml-1" />
               </button>
@@ -99,10 +109,10 @@ export default function Header() {
             </div>
 
             {/* Dropdown Quốc gia */}
-            <div className="relative">
+            <div className="relative  cursor-pointer">
               <button
                 onClick={() => toggleDropdown("countries")}
-                className="flex items-center hover:text-red-500 font-medium"
+                className="flex   cursor-pointer items-center hover:text-red-500 font-medium"
               >
                 Quốc gia <ChevronDown size={16} className="ml-1" />
               </button>
@@ -128,11 +138,31 @@ export default function Header() {
               size={22}
               className="text-gray-300 hover:text-red-500 cursor-pointer"
             />
-            <div className="flex items-center space-x-1">
-              <UserCircle size={24} className="text-gray-300" />
-              <a href="#" className="hover:text-red-500">
-                Đăng nhập
-              </a>
+            <div className="flex items-center space-x-1 cursor-pointer">
+              {!localStorage.getItem("userData") ? (
+                <>
+                  <UserCircle size={24} className="text-gray-300" />
+                  <a
+                    className="hover:text-red-500"
+                    onClick={() => {
+                      navigate("/login");
+                    }}
+                  >
+                    Đăng nhập
+                  </a>
+                </>
+              ) : (
+                <>
+                  {JSON.parse(localStorage.getItem("userData"))?.name} &nbsp;{" "}
+                  <TbLogout
+                    className="text-2xl hover:text-red-500"
+                    onClick={() => {
+                      logout();
+                      navigate("/login");
+                    }}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>

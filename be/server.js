@@ -1,72 +1,32 @@
-import express from "express";
-import cors from "cors";
-import axios from "axios";
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import fetchMoviesOnce from './src/helpers/helper.js';
+import authRoutes from './src/routes/authRoutes.js';
+import connectDB from './src/config/db.js';
+
+dotenv.config();
+
+connectDB();
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
-let cachedMovies = [];
+app.use('/api/auth', authRoutes);
+let cachedMovies = await fetchMoviesOnce();
 
-const axiosInstance = axios.create({
-  timeout: 10000,
-});
-
-const getMovieDetails = async (slug) => {
-  try {
-    const response = await axiosInstance.get(`https://ophim1.com/phim/${slug}`);
-    return response.data;
-  } catch (error) {
-    console.log(`Error fetching movie details for slug: ${slug} `);
-    return null;
-  }
-};
-
-const fetchMoviesOnce = async () => {
-    let currentPage = 1;
-    let hasMoreData = true;
-    const freshMovies = [];
-  
-    try {
-      while (hasMoreData) {
-        console.log(`Fetched page: ${currentPage}`);
-        const response = await axiosInstance.get(
-          `https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=${currentPage}`
-        );
-        const movies = response.data.items || [];
-  
-        if (!movies.length) {
-          hasMoreData = false;
-          break;
-        }
-  
-        const details = await Promise.all(
-          movies.map(async (movie) => await getMovieDetails(movie.slug))
-        );
-  
-        freshMovies.push(...details.filter((detail) => detail !== null));
-        currentPage++;
-      }
-  
-      cachedMovies = freshMovies; 
-      console.log("Fetched movies successfully!");
-    } catch (error) {
-      console.log("Error at fetchMoviesOnce: ", error);
-    }
-  };
-  
-
-fetchMoviesOnce();
+// console.log(cachedMovies);
 
 const two_day_interval = 168 * 60 * 60 * 1000;
 
 setInterval(async () => {
-    console.log("Auto-refetching movies...")
-    cachedMovies = [];
-    await fetchMoviesOnce();
-}, two_day_interval)
+  console.log("Auto-refetching movies...");
+  cachedMovies = await fetchMoviesOnce();
+}, two_day_interval);
 
 app.get("/api/movies", async (req, res) => {
-  console.log("Fetching movies!!");
+  console.log("Fetching movies");
   if (cachedMovies.length > 0) {
     res.json({
       status: "success",
@@ -81,6 +41,12 @@ app.get("/api/movies", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log(`Server is listening on port: 3000`);
+const PORT = process.env.PORT || 5000;
+
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route không tồn tại' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
